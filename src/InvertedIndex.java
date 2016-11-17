@@ -6,11 +6,7 @@
  * 11/9/2016
  */
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
+import java.io.*;
 import java.util.*;
 
 import org.apache.hadoop.conf.Configuration;
@@ -122,6 +118,13 @@ public class InvertedIndex {
         }
     }
 
+    /**
+     * FileCountComparator
+     *
+     * FileCountComparator class extends WritableComparator which implements RawComparable.
+     * This allows FileCountWritable classes to be compared at the byte level during the shuffle and sort phase,
+     * rather than being serialized and deserialized to execute the compareTo method.
+     */
     public static class FileCountComparator extends WritableComparator {
         protected FileCountComparator() {
             super(FileCountWritable.class);
@@ -377,50 +380,6 @@ public class InvertedIndex {
 		}
 	}
 
-	private static int serializeTest() {
-        FileCountWritable fcw1 = new FileCountWritable(25984, "Encyclopaedia.txt"); //list.get(0);
-        FileCountWritable fcw2 = new FileCountWritable(25984, "Encyclopaedia.txt"); //list.get(0);
-        //FileCountWritable fcw2 = new FileCountWritable(32, "Bill-of-Rights.txt"); //list.get(1);
-
-        int comp = 0;
-        try {
-            byte[] b1 = fcw1.serialize();
-            byte[] b2 = fcw2.serialize();
-            int s1 = 0;
-            int l1 = 0;
-            int s2 = 0;
-            int l2 = 0;
-
-            // Counts
-            int count1 = WritableComparator.readInt(b1, s1);
-            int count2 = WritableComparator.readInt(b2, s2);
-
-            comp = 0; //(count1 < count2) ? -1 : (count1 == count2) ? 0 : 1;
-            if (comp == 0) {
-                s1 += 4;
-                s2 += 4;
-
-                // String sizes
-                int i1 = WritableComparator.readVInt(b1, s1);
-                int i2 = WritableComparator.readVInt(b2, s2);
-
-                l1 = WritableUtils.decodeVIntSize(b1[s1]) + i1;
-                l2 = WritableUtils.decodeVIntSize(b2[s2]) + i2;
-
-                Text.Comparator TEXT_COMPARATOR = new Text.Comparator();
-                comp = TEXT_COMPARATOR.compare(b1, s1, l1, b2, s2, l2);
-
-                int comp2 = fcw1.getFile().toString().compareTo(fcw2.getFile().toString());
-
-                int stop = 1;
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return comp;
-    }
-
     /**
      * Main method: sets up map reduce job, times, and runs it.
      *
@@ -430,8 +389,6 @@ public class InvertedIndex {
      * @throws InterruptedException
      */
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        //serializeTest();
-
 		int status;
 		if (args.length > 1) {
             Configuration conf = new Configuration();

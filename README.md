@@ -9,6 +9,8 @@ This is a Hadoop MadReduce implementation of the inverted index algorithm that p
     src/InvertedIndex.java        Java source code for MapReduce job.
     pom.xml                       Maven configuration file for building the jar file.
     Makefile                      Makefile that invokes Maven (mvn) to build the jar file.
+    InvertedIndex.jar             Compiled JAR file.
+    README.md                     This README file.
     
 # 2) Building
 
