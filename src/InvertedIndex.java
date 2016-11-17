@@ -134,119 +134,105 @@ public class InvertedIndex {
         }
     }
 
-//    public static class InvertedIndexWritable implements WritableComparable<InvertedIndexWritable> {
-//        private Text word;
-//        private IntWritable count;
-//        private Text file;
-//
-//        public  InvertedIndexWritable(Text w, IntWritable c, Text f) {
-//            set(w, c, f);
-//        }
-//
-//        public  InvertedIndexWritable(String w, Integer c, String f) {
-//            set(w, c, f);
-//        }
-//
-//        public InvertedIndexWritable() {
-//            this("", 0, "");
-//        }
-//
-//        public InvertedIndexWritable(InvertedIndexWritable other) {
-//            word = new Text(other.getWord().toString());
-//            count = new IntWritable(other.getCount().get());
-//            file = new Text(other.getFile().toString());
-//        }
-//
-//        public void set(String w, Integer c, String f) {
-//            set(new Text(w), new IntWritable(c), new Text(f));
-//        }
-//
-//        public void set(Text w, IntWritable c, Text f) {
-//            word = w;
-//            count = c;
-//            file = f;
-//        }
-//
-//        public Text getWord() {
-//            return word;
-//        }
-//
-//        public IntWritable getCount() {
-//            return count;
-//        }
-//
-//        public Text getFile() {
-//            return file;
-//        }
-//
-//        @Override
-//        public void write(DataOutput out) throws IOException {
-//            word.write(out);
-//            count.write(out);
-//            file.write(out);
-//        }
-//
-//        @Override
-//        public void readFields(DataInput in) throws IOException {
-//            word.readFields(in);
-//            count.readFields(in);
-//            file.readFields(in);
-//        }
-//
-//        @Override
-//        public int compareTo(InvertedIndexWritable other) {
-//            int comp = word.compareTo(other.getWord());
-//
-//            if (comp == 0) {
-//                comp = count.compareTo(other.getCount()) * -1;      // Invert the count comparison to get max 1st
-//            }
-//
-//            if (comp == 0) {
-//                comp = file.compareTo(other.getFile());
-//            }
-//
-//            return comp;
-//
-//        }
-//
-//        public boolean equals(InvertedIndexWritable other) {
-//            return (this.compareTo(other) == 0);
-//        }
-//
-//        @Override
-//        public boolean equals(Object obj) {
-//            return (this.equals((InvertedIndexWritable) obj));
-//        }
-//
-//        @Override
-//        public int hashCode() {
-//            return word.hashCode() + count.hashCode() + file.hashCode();
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return word + " " + count + " " + file;
-//        }
-//    }
+    /**
+     * InvertedIndexWritable
+     *
+     * This class is for the secondary sort experiment, not used in the final version.
+     */
+    public static class InvertedIndexWritable implements WritableComparable<InvertedIndexWritable> {
+        private Text word;
+        private IntWritable count;
+        private Text file;
 
-//    public static class KeyComparator extends WritableComparator {
-//        protected KeyComparator() {
-//            super(InvertedIndexWritable.class, true);
-//        }
-//
-//        @Override
-//        public int compare(WritableComparable w1, WritableComparable w2) {
-//            InvertedIndexWritable ndx1 = (InvertedIndexWritable) w1;
-//            InvertedIndexWritable ndx2 = (InvertedIndexWritable) w2;
-//
-//            int comp = InvertedIndexWritable.compare(ndx1.getFirst(), ndx2.getFirst());
-//            if (comp == 0) {
-//                comp = -InvertedIndexWritable.compare(ndx1.getSecond(), ndx2.getSecond()); //reverse
-//            }
-//
-//            return comp;
-//        }
-//    }
+        public  InvertedIndexWritable(Text w, IntWritable c, Text f) {
+            set(w, c, f);
+        }
+
+        public  InvertedIndexWritable(String w, Integer c, String f) {
+            set(w, c, f);
+        }
+
+        public InvertedIndexWritable() {
+            this("", 0, "");
+        }
+
+        public InvertedIndexWritable(InvertedIndexWritable other) {
+            word = new Text(other.getWord().toString());
+            count = new IntWritable(other.getCount().get());
+            file = new Text(other.getFile().toString());
+        }
+
+        public void set(String w, Integer c, String f) {
+            set(new Text(w), new IntWritable(c), new Text(f));
+        }
+
+        public void set(Text w, IntWritable c, Text f) {
+            word = w;
+            count = c;
+            file = f;
+        }
+
+        public Text getWord() {
+            return word;
+        }
+
+        public IntWritable getCount() {
+            return count;
+        }
+
+        public Text getFile() {
+            return file;
+        }
+
+        @Override
+        public void write(DataOutput out) throws IOException {
+            word.write(out);
+            count.write(out);
+            file.write(out);
+        }
+
+        @Override
+        public void readFields(DataInput in) throws IOException {
+            word.readFields(in);
+            count.readFields(in);
+            file.readFields(in);
+        }
+
+        @Override
+        public int compareTo(InvertedIndexWritable other) {
+            int comp = word.compareTo(other.getWord());
+
+            if (comp == 0) {
+                comp = count.compareTo(other.getCount()) * -1;      // Invert the count comparison to get max 1st
+            }
+
+            if (comp == 0) {
+                comp = file.compareTo(other.getFile());
+            }
+
+            return comp;
+
+        }
+
+        public boolean equals(InvertedIndexWritable other) {
+            return (this.compareTo(other) == 0);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return (this.equals((InvertedIndexWritable) obj));
+        }
+
+        @Override
+        public int hashCode() {
+            return word.hashCode() + count.hashCode() + file.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return word + " " + count + " " + file;
+        }
+    }
 
     /**
      * Mapper Class
