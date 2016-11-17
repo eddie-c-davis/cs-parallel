@@ -15,7 +15,7 @@ This is a Hadoop MadReduce implementation of the inverted index algorithm that p
     make
     mvn package
     [INFO] Scanning for projects...
-    [INFO]                                                                         
+    [INFO]
     [INFO] ------------------------------------------------------------------------
     [INFO] Building InvertedIndex 1.0
     [INFO] ------------------------------------------------------------------------
@@ -41,14 +41,26 @@ This is a Hadoop MadReduce implementation of the inverted index algorithm that p
 
 # 3) Running
 
-    Executing the jar with no arguments will produce the usage command:
+    a. Run the jar with no arguments to get the usage command:
 
-    $ hadoop jar InvertedIndex.jar
-    Usage: InvertedIndex <input path> <output path>
+        $ hadoop jar InvertedIndex.jar
+        Usage: InvertedIndex <input path> <output path>
 
-    Or to run with inputs (e.g., the etext-all collection):
+    b. Create the directory structure in HDFS:
 
-    $ hadoop jar InvertedIndex.jar inverted-index/etext-all inverted-index/output
+        $ hdfs dfs -mkdir -p /user/$USER/inverted-index
+
+    c. Upload the etext-all collection from Dr. Jain's path:
+
+        $ hdfs dfs -put /home/faculty/amit/cs430/etext-data/etext-all /user/$USER/inverted-index
+
+    d. Run the code (e.g., the etext-all collection):
+
+        $ hadoop jar InvertedIndex.jar inverted-index/etext-all inverted-index/output
+
+    e. Fetch the output from HDFS:
+        
+        $ hdfs dfs -get inverted-index/output ./output
 
 Thank you!
 
