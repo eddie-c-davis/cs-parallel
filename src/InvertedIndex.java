@@ -88,7 +88,6 @@ public class InvertedIndex {
             }
 
             return comp;
-
         }
 
         public boolean equals(FileCountWritable other) {
@@ -114,13 +113,9 @@ public class InvertedIndex {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             DataOutputStream dos = new DataOutputStream(bos);
 
-            //Serialize the data
+            // Serialize the data
             this.write(dos);
-
-            //storing the serialized object in bytearray
             byte[] bytes = bos.toByteArray();
-
-            //Closing the OutputStream
             dos.close();
 
             return bytes;
@@ -128,55 +123,15 @@ public class InvertedIndex {
     }
 
     public static class FileCountComparator extends WritableComparator {
-//        private static final int LENGTH_BYTES = 4;
-//        private static final Text.Comparator TEXT_COMPARATOR = new Text.Comparator();
-
         protected FileCountComparator() {
             super(FileCountWritable.class);
         }
 
         @Override
         public int compare(byte[] b1, int s1, int l1, byte[] b2, int s2, int l2) {
-//            try {
-//                int count1 = readInt(b1, s1);
-//                int count2 = readInt(b2, s2);
-//                int comp = (count1 < count2) ? -1 : (count1 == count2) ? 0 : 1;
-//
-//                if (comp == 0) {
-//                    s1 += LENGTH_BYTES;
-//                    s2 += LENGTH_BYTES;
-//
-//                    // Text sizes
-//                    int size1 = readVInt(b1, s1);
-//                    int size2 = readVInt(b2, s2);
-//
-//                    int offset1 = WritableUtils.decodeVIntSize(b1[s1]) + size1;
-//                    int offset2 = WritableUtils.decodeVIntSize(b2[s2]) + size2;
-//
-//                    comp = TEXT_COMPARATOR.compare(b1, s1, offset1, b2, s2, offset2);
-//                }
-//
-//                return comp;
-//            } catch (IOException ioe) {
-//                throw new IllegalArgumentException(ioe);
-//            }
-
             // Since we are converter all strings to lower case, we can just compare the byte arrays directly!
             return WritableComparator.compareBytes(b1, s1, l1, b2, s2, l2);
         }
-
-//        @Override
-//        @SuppressWarnings("rawtypes")
-//        public int compare(WritableComparable a, WritableComparable b) {
-//            int comp;
-//            if (a instanceof FileCountWritable && b instanceof FileCountWritable) {
-//                comp = ((FileCountWritable) a).compareTo((FileCountWritable) b);
-//            } else {
-//                comp = super.compare(a, b);
-//            }
-//
-//            return comp;
-//        }
     }
 
 //    public static class InvertedIndexWritable implements WritableComparable<InvertedIndexWritable> {

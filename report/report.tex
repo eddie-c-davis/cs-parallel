@@ -33,7 +33,7 @@ The process for building an inverted index for a collection consists of parsing 
 \caption{Sequential Inverted Index }
 \label{alg:alg1}
 \begin{algorithmic}[0]
-\Procedure{SequentialInvertedIndex}{$coll$}\Comment{Collection coll}
+\Function{SequentialInvertedIndex}{$coll$}\Comment{Collection coll}
 	\State $M \gets \texttt{new AssociativeArray}$
 	\ForAll{$doc \in coll$}\Comment{Document doc}
 		\ForAll{$word \in doc$}
@@ -51,7 +51,7 @@ The process for building an inverted index for a collection consists of parsing 
     \EndFor
 	
 	%\Return $A$
-\EndProcedure	
+\EndFunction
 \end{algorithmic}
 \end{algorithm}
 
@@ -65,28 +65,61 @@ The inverted index problem is a natural fit for the MapReduce paradigm, particul
 	\caption{MapReduce Inverted Index 1}
 	\label{alg:alg2}
 	\begin{algorithmic}[0]
-		\Procedure{SequentialInvertedIndex}{$coll$}\Comment{Collection coll}
-		\State $M \gets \texttt{new AssociativeArray}$
-		\ForAll{$doc \in coll$}\Comment{Document doc}
-		\ForAll{$word \in doc$}
-		\If{$word \notin M$}
-		\State $M\{word\} \gets \texttt{new Set}$
-		\EndIf
-		
-		\State $M\{word\}.add(doc.id)$
+		\Function{map}{$id, doc$}		
+		\ForAll{$word \in doc$}		
+		\State $\texttt{\textbf{emit}}(word, id)$
 		\EndFor
+		\EndFunction		
+
+		\Function{reduce}{$word, [id_1, id_2, ..., id_n]$}		
+		\State $output \gets ""$
+		\ForAll{$id \in [id_1, id_2, ..., id_n]$}
+		\State $output \gets output \| id$
 		\EndFor
-		
-		\State $F \gets \texttt{new File}$
-		\ForAll{$word \in M$}
-		\State $F.write(F, M\{word\})$
-		\EndFor
-		
-		%\Return $A$
-		\EndProcedure	
+		\State $\texttt{\textbf{emit}}(word, output)$
+		\EndFunction		
 	\end{algorithmic}
 \end{algorithm}
 
+This algorithm is effective but results in redundant document IDs in the final output. The first improvement is to count the number of times each word occurs in a given document and emit that from the mapper class to eliminate the repetitive output. This implementation takes advantage of the in-mapper combiner design pattern. The \texttt{setup} method initializes an associate array, a Java \texttt{HashMap} specifically. The \texttt{map} method updates the counter for each word in the array. Finally, the \texttt{cleanup} method emits the word, count pairs for each document.
+
+The \texttt{reduce} method is responsible for collecting the count, document pairs for word, combining them into a single output, and emitting them. See Algorithm 3.
+
+\begin{algorithm}
+	\caption{MapReduce Inverted Index 2}
+	\label{alg:alg3}
+	\begin{algorithmic}[0]
+		\Function{setup}{}		
+			\State $M \gets \texttt{new AssociativeArray}$
+		\EndFunction
+		
+		\Function{map}{$id, doc$}
+		\ForAll{$word \in doc$}		
+		\If{$word \notin M$}
+		\State $M\{word\} \gets 0$
+		\EndIf
+		
+		\State $M\{word\} \gets M\{word\} + 1$
+		\EndFor
+		\EndFunction		
+		
+		\Function{cleanup}{}
+		\ForAll{$word \in M$}
+		\State $\texttt{\textbf{emit}}(word, M\{word\})$
+		\EndFor
+		\EndFunction
+		
+		\Function{reduce}{$word, [(c_1, id_1), (c_2, id_2), ..., (c_n, id_n)]$}		
+		\State $output \gets ""$
+		\ForAll{$(c, id) \in [(c_1, id_1), (c_2, id_2), ..., (c_n, id_n)]$}
+		\State $output \gets output \| c \| id$
+		\EndFor
+		\State $\texttt{\textbf{emit}}(word, output)$
+		\EndFunction		
+	\end{algorithmic}
+\end{algorithm}
+
+The last improvement to the algorithm is to sort the document IDs in the reducer output by the count in reverse order, such that the files with the greatest number of matches appear first. This is accomplished by implementing a custom writable class called \texttt{FileCountWritable}. This class is emitted by the mapper and implements the \texttt{compareTo} method, allowing the reducer to easily sort the document IDs by count.
 
 \section*{3 Experimental Setup}
 
