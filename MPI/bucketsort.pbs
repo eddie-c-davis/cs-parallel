@@ -1,0 +1,42 @@
+#!/bin/sh
+#PBS -l nodes=4:node
+#PBS -m e
+# This is a PBS job submission script. The second line asks to reserve 1 node.
+# The third line asks to email you when your job finishes. The fourth line
+# asks to run your job after 5pm in the evening.
+# 
+# IMPORTANT NOTE:  Be sure to modify the "cd" command below to switch
+# to the directory in which you are currently working! 
+#------------------------------------------------------------------------
+
+cd /home/students/edavis/530/bucketsort
+
+echo > parallel-bucketsort.log
+
+echo "./parallel-bucketsort p=4 n=100000000 b=40000 s=6764" >> parallel-bucketsort.log
+mpiexec -n 4 ./parallel-bucketsort 100000000 40000 6764 >> parallel-bucketsort.log
+
+echo "./parallel-bucketsort p=4 n=100000000 b=40000 s=445455" >> parallel-bucketsort.log
+mpiexec -n 4 ./parallel-bucketsort 100000000 40000 445455 >> parallel-bucketsort.log
+
+echo "./parallel-bucketsort p=4 n=100000000 b=40000 s=2876533" >> parallel-bucketsort.log
+mpiexec -n 4 ./parallel-bucketsort 100000000 40000 2876533 >> parallel-bucketsort.log
+
+echo "./parallel-bucketsort p=4 n=200000000 b=40000 s=6764" >> parallel-bucketsort.log
+mpiexec -n 4 ./parallel-bucketsort 200000000 40000 6764 >> parallel-bucketsort.log
+
+echo "./parallel-bucketsort p=4 n=200000000 b=40000 s=445455" >> parallel-bucketsort.log
+mpiexec -n 4 ./parallel-bucketsort 200000000 40000 445455 >> parallel-bucketsort.log
+
+echo "./parallel-bucketsort p=4 n=200000000 b=40000 s=2876533" >> parallel-bucketsort.log
+mpiexec -n 4 ./parallel-bucketsort 200000000 40000 2876533 >> parallel-bucketsort.log
+
+echo "./parallel-bucketsort p=4 n=500000000 b=40000 s=6764" >> parallel-bucketsort.log
+mpiexec -n 4 ./parallel-bucketsort 500000000 40000 6764 >> parallel-bucketsort.log
+
+echo "./parallel-bucketsort p=4 n=500000000 b=40000 s=445455" >> parallel-bucketsort.log
+mpiexec -n 4 ./parallel-bucketsort 500000000 40000 445455 >> parallel-bucketsort.log
+
+echo "./parallel-bucketsort p=4 n=500000000 b=40000 s=2876533" >> parallel-bucketsort.log
+mpiexec -n 4 ./parallel-bucketsort 500000000 40000 2876533 >> parallel-bucketsort.log
+

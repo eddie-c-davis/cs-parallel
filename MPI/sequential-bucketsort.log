@@ -1,0 +1,9 @@
+bucketsort: n = 100000000  m = 40000 buckets seed = 6764 time = 12.449322 seconds
+bucketsort: n = 100000000  m = 40000 buckets seed = 445455 time = 12.466958 seconds
+bucketsort: n = 100000000  m = 40000 buckets seed = 2876533 time = 12.484128 seconds
+bucketsort: n = 200000000  m = 40000 buckets seed = 6764 time = 27.335303 seconds
+bucketsort: n = 200000000  m = 40000 buckets seed = 445455 time = 27.454459 seconds
+bucketsort: n = 200000000  m = 40000 buckets seed = 2876533 time = 27.383991 seconds
+bucketsort: n = 500000000  m = 40000 buckets seed = 6764 time = 76.813869 seconds
+bucketsort: n = 500000000  m = 40000 buckets seed = 445455 time = 76.858629 seconds
+bucketsort: n = 500000000  m = 40000 buckets seed = 2876533 time = 77.022246 seconds

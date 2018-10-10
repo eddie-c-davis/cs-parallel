@@ -1,0 +1,56 @@
+  CS530 PA2: Parallel Bucketsort ReadMe
+==========================================
+
+ 1) Contents
+
+    bucketsort-seq.c:            Sequential version of the code.
+    bucketsort-par.c:            Parallel version of the code (MPI + OMP Hybrid).
+    mympi.h:                     Header file for the 'mympi' library consisting of wrappers around MPI_* functions with logging and error handling.
+    mympi.c:                     Source file for the 'mympi' library.
+    mytypes.h                    Header files with common typdefs and constants.
+    Makefile:                    Makefile for building the code.
+    bucketsort.pbs:              PBS script (defaults to 8 nodes) for submitting jobs via the qsub command.
+    sequential-bucketsort.log:   Log file containing sample output of the seqential program.
+    parallel-bucketsort.log:     Log file containing sample output of the parallel program.
+
+ 2) Building
+
+    make
+
+    cc    -c -o mympi.o mympi.c
+    mpicc -Wall -g -O3 -fopenmp -o mympi.o -lm -lprand -c
+    cc    -c -o bucketsort-seq.o bucketsort-seq.c
+    gcc -Wall -g -O3 -o bucketsort-seq bucketsort-seq.o -lm -lprand
+    cp -f ./bucketsort-seq ./sequential-bucketsort
+    cc    -c -o bucketsort-par.o bucketsort-par.c
+    mpicc -Wall -g -O3 -fopenmp -o bucketsort-par bucketsort-par.o -lm -lprand mympi.o
+    cp -f ./bucketsort-par ./parallel-bucketsort
+
+    Produces both the sequential (sequential-bucketsort) and parallel (parallel-bucketsort) executables.
+
+ 3) Running
+
+    Executing the binaries with no arguments will produce the usage command:
+
+        ./parallel-bucketsort 
+        usage: ./parallel-bucketsort [items] <buckets> <seed>
+
+    Or to run with mpiexec:
+
+        mpiexec -n <n> ./parallel-bucketsort 100000000 40000 6764
+
+    For parallel runs, the PBS script will take care of the setup:
+
+        qsub ./bucketsort.pbs
+
+ 4) Known Issues
+
+    The code unfortunately seg faults occasionally. There are two versions of the parallel bucket sort function,
+    parBucketSortA2A that attempts (unsuccessfully) to use MPI_Alltoallv command, and parBucketSortP2P that uses 
+    the standard MPI_Send / MPI_Recv commands for point to point communication. The current version has the P2P
+    enabled and the A2A commented. Clearly, A2A would be the preferred method, and if inspiration should strike
+    while working on the write-up, the fixes will definitely be noted therein.
+
+
+Thank you!
+

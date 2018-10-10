@@ -1,0 +1,17 @@
+CC=gcc
+DEBUG=2
+
+CFLAGS=-Wall -g
+#CFLAGS=-Wall -O -DDEBUG=$(DEBUG)
+
+#linker flags for libraries
+LDFLAGS=-lm
+PROGS=bucketsort-seq
+
+all: $(PROGS)
+
+bucketsort-seq:	bucketsort-seq.o
+	$(CC) $(CFLAGS) -o $@ bucketsort-seq.o $(LDFLAGS)
+
+clean:
+	/bin/rm -f *.o a.out $(PROGS)
